@@ -1,6 +1,6 @@
 package main
 
-
+//These aren't comments they are compiler flags for the c code.. dont remove them.
 // #cgo LDFLAGS: -framework CoreFoundation -framework IOKit
 //int iosurface_utils_get_connection(const char* name);
 //int enumerate_clients(const char* name);
@@ -60,24 +60,7 @@ func sqlite_macho(ProgramName string, Protocols string){
 	statement.Exec(ProgramName, Protocols)
 	check(err)
 
-
-	//statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS Macho (id INTEGER PRIMARY KEY AUTOINCREMENT, ProgName TEXT NOT NULL UNIQUE, Protocols TEXT, ObjC TEXT, Entitlments TEXT,Sections TEXT, CS_OPS TEXT, XPC TEXT);");
-
-
 }
-
-func error_check(err error){
-	if err != nil{
-		log.Fatalln(err)
-	}
-}
-
-
-
-
-
-
-
 
 
 
