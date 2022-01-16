@@ -78,103 +78,7 @@ func error_check(err error){
 
 
 
-/*func parse_file_macho(file_path string) int {
 
-
-	disassembler := NewDisassmeber()
-	defer disassembler.f.Close()
-	test, err := macho.Open(file_path)
-	check_error(err)
-	fmt.Printf(test.CPU.String()+ "\n")
-	if err != nil{
-		return 1
-	}
-	//textsegment := disassembler.f.Segment("__TEXT")
-	//fmt.Printf("%s", textsegment.String());
-
-//	TextSegment := disassembler.f.Section("__TEXT", "__text")
-//	fmt.Printf("Text Section Address: 0x%x\n", TextSegment.Addr)
-//	DataSegment := disassembler.f.Section("__DATA", "__data")
-//	fmt.Printf("Data Section Address: 0x%x\n", DataSegment.Addr)
-	//textData, err := TextSegment.Data();
-//	check_error(err);
-
-	for addr, imports_name := range disassembler.f.ImportedLibraries(){
-		fmt.Printf("Imports: %s Address: 0x%x\n", imports_name, addr);
-
-	}
-	fmt.Println("\nSections")
-	for _, y := range disassembler.f.Sections{
-		fmt.Printf("%s, Address: 0x%x\n", y.Name, y.Addr)
-	};
-
-
-
-	//SymNames, _ := disassembler.f.ImportedSymbols()
-
-	symbols, err := disassembler.f.ImportedSymbols()
-	check_error(err)
-
-
-	symMap := make(map[ /*Address*//*symb *macho.Symbol)
-	for i := range symbols {
-		symMap[symbols[i].Value] = &symbols[i]
-	}
-
-	numofSym := len(symbols)
-	fmt.Printf("[=] Found %d Symbols\n", numofSym);
-
-	if disassembler.f.Symtab == nil{
-		fmt.Printf("No Symtab found\n")
-	}
-
-	//var addrs []uint64
-	for _, s := range disassembler.f.Symtab.Syms {
-		if s.Type&stabTypeMask == 0 {
-			addrs = append(addrs, s.Value)
-		}
-	}
-	sort.Sort(uint64s(addrs))
-	var syms []Sym
-	for _, s := range disassembler.f.Symtab.Syms{
-		if s.Type&stabTypeMask != 0 {
-			continue
-		}
-		sym := Sym{Name: s.Name, Addr: s.Value, Code: '?'}
-		i := sort.Search(len(addrs), func(x int) bool { return addrs[x] > s.Value })
-		if i < len(addrs) {
-			sym.Size = int64(addrs[i] - s.Value)
-		}
-		if s.Sect == 0 {
-			sym.Code = 'U'
-		} else if int(s.Sect) <= len(disassembler.f.Sections) {
-			sect := disassembler.f.Sections[s.Sect-1]
-			switch sect.Seg {
-			case "__TEXT", "__DATA_CONST":
-				sym.Code = 'R'
-			case "__DATA":
-				sym.Code = 'D'
-			}
-			switch sect.Seg + " " + sect.Name {
-			case "__TEXT __text":
-				sym.Code = 'T'
-			case "__DATA __bss", "__DATA __noptrbss":
-				sym.Code = 'B'
-			}
-		}
-		syms = append(syms, sym)
-	}
-	for _,q := range syms{
-		fmt.Printf("Symbol: %s\n", q.Name)
-		fmt.Printf("Address: %d\n", q.Addr)
-
-
-	}
-
-	return 0
-
-
-}*/
 
 
 func check(err error)(int){
@@ -256,7 +160,6 @@ func fat_parse(file_path string)(int){
 		color.Green("File:%s\n", file.Name())
 
 		for _, arch := range fat_file.Arches{
-			//entitlements := arch.CodeSignature().Entitlements
 
 			ObjProtocols, _ := arch.GetObjCProtocols()
 			for _, Protocols := range ObjProtocols{
@@ -265,7 +168,6 @@ func fat_parse(file_path string)(int){
 				sqlite_macho(file.Name(), Protocols.String())
 
 
-				//SQL(file.Name(), Protocols.String())
 
 
 				OptMethods := Protocols.OptionalClassMethods
@@ -284,19 +186,9 @@ func fat_parse(file_path string)(int){
 				}
 			}
 
-			//	for _, Symbols := range FatSymbols{
-			// match, _ := regexp.MatchString("[aA][uU][dD][iI][tT]..*", Symbols)
-			//		   fmt.Printf("Symbol: %s\n", Symbols)
-			//	   if match {
-			//		   color.Red("- Found Audit!!\n")
-			//	   }
-			// }
-
-
-
 		}
 	}
-	//}
+
 
 
 
