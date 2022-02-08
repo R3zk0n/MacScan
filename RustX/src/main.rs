@@ -3,7 +3,7 @@ extern crate libc;
 extern crate mach;
 extern crate sysinfo;
 use colored::Colorize;
-use libc::{c_char, c_int, int32_t, mach_port_t, pid_t};
+use libc::{c_char, c_int, int32_t, KERN_SUCCESS, mach_port_t, mach_vm_address_t, pid_t, vm_address_t};
 use mach::message::mach_msg_type_number_t;
 use mach::structs::x86_thread_state64_t;
 use mach::task::{task_resume, task_suspend, task_threads};
@@ -17,13 +17,18 @@ use std::mem;
 use std::process;
 use std::ptr;
 use std::{env, io};
+use std::ops::Deref;
+use std::ptr::null;
 use sysinfo::{Pid, ProcessExt, System, SystemExt};
 
 use clap::Parser;
+use mach::vm::*;
 use mach::bootstrap;
 use mach::bootstrap::{bootstrap_look_up, bootstrap_port};
 use mach::kern_return;
 use mach::port::{mach_port_name_t, MACH_PORT_NULL};
+use mach::vm_statistics::VM_FLAGS_ANYWHERE;
+use mach::vm_types::vm_map_address_t;
 
 #[derive(Parser, Debug)]
 #[clap(author = "Rezkon")]
@@ -38,8 +43,39 @@ struct pids_args {
     check_pids: Option<bool>,
 }
 
+
+
+fn exploit_pid(task: mach_port_name_t){
+
+
+    let mut remoteStack:mach_vm_address_t = 0;
+    let mut remoteCode: mach_vm_address_t = 0;
+    let mut address:mach_vm_address_t = 0;
+
+
+    let size = 0x1000;
+
+    let kr = unsafe {
+        mach_vm_allocate(task,  &mut address, size, VM_FLAGS_ANYWHERE)
+    };
+    if kr != KERN_SUCCESS{
+        println!("Successful")
+    } else {
+        println!("Stack allocated! 0x{:x}", address);
+
+    }
+
+
+
+
+
+
+}
 fn enumerate_pid_task_pid() {
     let s = System::new_all();
+    let mut remoteStack:mach_vm_address_t = 0;
+    let mut remoteCode: mach_vm_address_t = 0;
+    let mut address:mach_vm_address_t = 0;
 
     for (pid, process) in s.processes() {
         // println!("{} {}", pid, process.name());
@@ -71,6 +107,13 @@ fn enumerate_pid_task_pid() {
                 )
                 .green()
             );
+
+            println!("Trying to allocate stack memory for PID: {}", pid);
+            exploit_pid(task)
+
+
+
+
         }
     }
 }
